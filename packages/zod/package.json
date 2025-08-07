@@ -1,0 +1,29 @@
+{
+  "name": "@tasker/zod",
+  "version": "1.0.0",
+  "description": "Package which exports all Boilerplate zod schemas and types",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "dev": "tsc && (concurrently \"tsc -w\" \"tsc-alias -w\")",
+    "clean": "rimraf dist tsconfig.tsbuildinfo .turbo node_modules"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anatine/zod-openapi": "^2.2.7",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "tsc-alias": "^1.8.12",
+    "typescript": "^5.8.2"
+  }
+}

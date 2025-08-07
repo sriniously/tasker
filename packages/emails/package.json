@@ -1,0 +1,23 @@
+{
+  "name": "@tasker/emails",
+  "version": "1.0.0",
+  "description": "Package to manage emails",
+  "type": "module",
+  "scripts": {
+    "dev": "email dev --dir ./src/templates -p 3001",
+    "export": "email export --pretty --dir ./src/templates --outDir ../../apps/backend/templates/emails"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react-email/components": "0.0.34",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-email": "4.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4"
+  }
+}

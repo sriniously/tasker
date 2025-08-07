@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+
+  "compilerOptions": {
+    // Module and runtime settings
+    "module": "NodeNext", // Use Node.js-style module resolution with ESM support
+    "target": "es2022", // Target modern ES2022 JavaScript features
+    "lib": ["es2022"], // Include ES2022 standard library definitions
+    "moduleDetection": "force", // Ensure explicit module detection rules
+    "esModuleInterop": true, // Enable compatibility with CommonJS modules
+    "resolveJsonModule": true, // Allow importing JSON files
+    "allowJs": true, // Allow JavaScript files alongside TypeScript
+    "isolatedModules": true, // Enforce module boundary rules for isolated compilation
+    "verbatimModuleSyntax": true, // Preserve module import/export syntax without rewriting
+
+    // Strictness settings
+    "strict": true, // Enable all strict type-checking options
+    "noUncheckedIndexedAccess": true, // Require explicit checks for indexed properties
+    "noImplicitOverride": true, // Enforce explicit overrides in subclass methods
+
+    // Output control
+    "outDir": "dist", // Specify the output directory for compiled files
+    "sourceMap": true, // Generate source map files for debugging
+    "declaration": true, // Emit TypeScript declaration files
+    "declarationMap": true, // Emit source maps for declaration files
+    "composite": true, // Enable project references and incremental builds
+
+    // Path and resolution
+    "rootDir": "src", // Specify the root directory for input files
+    "baseUrl": "./src", // Base URL for module resolution
+    "paths": {
+      // Aliases for module paths
+      "@/*": ["./*"]
+    },
+
+    // Type checking
+    "skipLibCheck": true // Skip type checking of declaration files
+  },
+
+  "include": ["src/**/*.ts"], // Include all TypeScript files in the src directory
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and the output directory
+}
