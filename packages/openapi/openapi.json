@@ -89,6 +89,1941 @@
           }
         }
       }
+    },
+    "/v1/todos": {
+      "get": {
+        "description": "Get all todos",
+        "summary": "Get all todos",
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "created_at",
+                "updated_at",
+                "title",
+                "priority",
+                "due_date",
+                "status"
+              ]
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "active",
+                "completed",
+                "archived"
+              ]
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ]
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "parentTodoId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "dueFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dueTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "overdue",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "completed",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "operationId": "getTodos",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "draft",
+                              "active",
+                              "completed",
+                              "archived"
+                            ]
+                          },
+                          "priority": {
+                            "type": "string",
+                            "enum": [
+                              "low",
+                              "medium",
+                              "high"
+                            ]
+                          },
+                          "dueDate": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "completedAt": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "parentTodoId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "nullable": true
+                          },
+                          "categoryId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "nullable": true
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "properties": {
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "reminder": {
+                                "type": "string"
+                              },
+                              "color": {
+                                "type": "string"
+                              },
+                              "difficulty": {
+                                "type": "number"
+                              }
+                            },
+                            "nullable": true
+                          },
+                          "sortOrder": {
+                            "type": "number"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "userId": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "color": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              },
+                              "updatedAt": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "userId",
+                              "name",
+                              "color",
+                              "description",
+                              "createdAt",
+                              "updatedAt"
+                            ],
+                            "nullable": true
+                          },
+                          "children": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "userId": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "enum": [
+                                    "draft",
+                                    "active",
+                                    "completed",
+                                    "archived"
+                                  ]
+                                },
+                                "priority": {
+                                  "type": "string",
+                                  "enum": [
+                                    "low",
+                                    "medium",
+                                    "high"
+                                  ]
+                                },
+                                "dueDate": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "completedAt": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "parentTodoId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "nullable": true
+                                },
+                                "categoryId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "nullable": true
+                                },
+                                "metadata": {
+                                  "type": "object",
+                                  "properties": {
+                                    "tags": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "reminder": {
+                                      "type": "string"
+                                    },
+                                    "color": {
+                                      "type": "string"
+                                    },
+                                    "difficulty": {
+                                      "type": "number"
+                                    }
+                                  },
+                                  "nullable": true
+                                },
+                                "sortOrder": {
+                                  "type": "number"
+                                },
+                                "createdAt": {
+                                  "type": "string"
+                                },
+                                "updatedAt": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "userId",
+                                "title",
+                                "description",
+                                "status",
+                                "priority",
+                                "dueDate",
+                                "completedAt",
+                                "parentTodoId",
+                                "categoryId",
+                                "metadata",
+                                "sortOrder",
+                                "createdAt",
+                                "updatedAt"
+                              ]
+                            }
+                          },
+                          "comments": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "todoId": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "userId": {
+                                  "type": "string"
+                                },
+                                "content": {
+                                  "type": "string"
+                                },
+                                "createdAt": {
+                                  "type": "string"
+                                },
+                                "updatedAt": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "todoId",
+                                "userId",
+                                "content",
+                                "createdAt",
+                                "updatedAt"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "userId",
+                          "title",
+                          "description",
+                          "status",
+                          "priority",
+                          "dueDate",
+                          "completedAt",
+                          "parentTodoId",
+                          "categoryId",
+                          "metadata",
+                          "sortOrder",
+                          "createdAt",
+                          "updatedAt",
+                          "category",
+                          "children",
+                          "comments"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "page": {
+                      "type": "number"
+                    },
+                    "limit": {
+                      "type": "number"
+                    },
+                    "totalPages": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "total",
+                    "page",
+                    "limit",
+                    "totalPages"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "description": "Create a new todo",
+        "summary": "Create a new todo",
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [],
+        "operationId": "createTodo",
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  "dueDate": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "parentTodoId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "properties": {
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "reminder": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string"
+                      },
+                      "difficulty": {
+                        "type": "number"
+                      }
+                    },
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "title"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "201",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "draft",
+                        "active",
+                        "completed",
+                        "archived"
+                      ]
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                      ]
+                    },
+                    "dueDate": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "completedAt": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "parentTodoId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "categoryId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "reminder": {
+                          "type": "string"
+                        },
+                        "color": {
+                          "type": "string"
+                        },
+                        "difficulty": {
+                          "type": "number"
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "sortOrder": {
+                      "type": "number"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "title",
+                    "description",
+                    "status",
+                    "priority",
+                    "dueDate",
+                    "completedAt",
+                    "parentTodoId",
+                    "categoryId",
+                    "metadata",
+                    "sortOrder",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/todos/{id}": {
+      "get": {
+        "description": "Get todo by ID",
+        "summary": "Get todo by ID",
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "getTodoById",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "draft",
+                        "active",
+                        "completed",
+                        "archived"
+                      ]
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                      ]
+                    },
+                    "dueDate": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "completedAt": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "parentTodoId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "categoryId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "reminder": {
+                          "type": "string"
+                        },
+                        "color": {
+                          "type": "string"
+                        },
+                        "difficulty": {
+                          "type": "number"
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "sortOrder": {
+                      "type": "number"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "userId": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "color": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "userId",
+                        "name",
+                        "color",
+                        "description",
+                        "createdAt",
+                        "updatedAt"
+                      ],
+                      "nullable": true
+                    },
+                    "children": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "draft",
+                              "active",
+                              "completed",
+                              "archived"
+                            ]
+                          },
+                          "priority": {
+                            "type": "string",
+                            "enum": [
+                              "low",
+                              "medium",
+                              "high"
+                            ]
+                          },
+                          "dueDate": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "completedAt": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "parentTodoId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "nullable": true
+                          },
+                          "categoryId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "nullable": true
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "properties": {
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "reminder": {
+                                "type": "string"
+                              },
+                              "color": {
+                                "type": "string"
+                              },
+                              "difficulty": {
+                                "type": "number"
+                              }
+                            },
+                            "nullable": true
+                          },
+                          "sortOrder": {
+                            "type": "number"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "userId",
+                          "title",
+                          "description",
+                          "status",
+                          "priority",
+                          "dueDate",
+                          "completedAt",
+                          "parentTodoId",
+                          "categoryId",
+                          "metadata",
+                          "sortOrder",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "comments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "todoId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "content": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "todoId",
+                          "userId",
+                          "content",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "title",
+                    "description",
+                    "status",
+                    "priority",
+                    "dueDate",
+                    "completedAt",
+                    "parentTodoId",
+                    "categoryId",
+                    "metadata",
+                    "sortOrder",
+                    "createdAt",
+                    "updatedAt",
+                    "category",
+                    "children",
+                    "comments"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "description": "Update todo",
+        "summary": "Update todo",
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "updateTodo",
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "draft",
+                      "active",
+                      "completed",
+                      "archived"
+                    ]
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  "dueDate": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "parentTodoId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "properties": {
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "reminder": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string"
+                      },
+                      "difficulty": {
+                        "type": "number"
+                      }
+                    },
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "draft",
+                        "active",
+                        "completed",
+                        "archived"
+                      ]
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                      ]
+                    },
+                    "dueDate": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "completedAt": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "parentTodoId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "categoryId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "reminder": {
+                          "type": "string"
+                        },
+                        "color": {
+                          "type": "string"
+                        },
+                        "difficulty": {
+                          "type": "number"
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "sortOrder": {
+                      "type": "number"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "title",
+                    "description",
+                    "status",
+                    "priority",
+                    "dueDate",
+                    "completedAt",
+                    "parentTodoId",
+                    "categoryId",
+                    "metadata",
+                    "sortOrder",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "description": "Delete todo",
+        "summary": "Delete todo",
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "deleteTodo",
+        "responses": {
+          "204": {
+            "description": "204",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/todos/stats": {
+      "get": {
+        "description": "Get todo statistics",
+        "summary": "Get todo statistics",
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [],
+        "operationId": "getTodoStats",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number"
+                    },
+                    "draft": {
+                      "type": "number"
+                    },
+                    "active": {
+                      "type": "number"
+                    },
+                    "completed": {
+                      "type": "number"
+                    },
+                    "archived": {
+                      "type": "number"
+                    },
+                    "overdue": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "total",
+                    "draft",
+                    "active",
+                    "completed",
+                    "archived",
+                    "overdue"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/todos/{id}/comments": {
+      "post": {
+        "summary": "Add comment to todo",
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "addComment",
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "content"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "201",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "todoId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "todoId",
+                    "userId",
+                    "content",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "Get comments for todo",
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "getCommentsByTodoId",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "todoId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "userId": {
+                        "type": "string"
+                      },
+                      "content": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "todoId",
+                      "userId",
+                      "content",
+                      "createdAt",
+                      "updatedAt"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/comments/{id}": {
+      "patch": {
+        "summary": "Update comment",
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "updateComment",
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "content"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "todoId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "todoId",
+                    "userId",
+                    "content",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete comment",
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "deleteComment",
+        "responses": {
+          "204": {
+            "description": "204",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/categories": {
+      "get": {
+        "description": "Get all categories",
+        "summary": "Get all categories",
+        "tags": [
+          "Category"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "created_at",
+                "updated_at",
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "operationId": "getCategories",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "color": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "userId",
+                          "name",
+                          "color",
+                          "description",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "page": {
+                      "type": "number"
+                    },
+                    "limit": {
+                      "type": "number"
+                    },
+                    "totalPages": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "total",
+                    "page",
+                    "limit",
+                    "totalPages"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "description": "Create a new category",
+        "summary": "Create a new category",
+        "tags": [
+          "Category"
+        ],
+        "parameters": [],
+        "operationId": "createCategory",
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "color": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "name",
+                  "color"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "201",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "color": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "name",
+                    "color",
+                    "description",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/categories/{id}": {
+      "get": {
+        "description": "Get category by ID",
+        "summary": "Get category by ID",
+        "tags": [
+          "Category"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "getCategoryById",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "color": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "name",
+                    "color",
+                    "description",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "description": "Update category",
+        "summary": "Update category",
+        "tags": [
+          "Category"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "updateCategory",
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "color": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "color": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "name",
+                    "color",
+                    "description",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "description": "Delete category",
+        "summary": "Delete category",
+        "tags": [
+          "Category"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "deleteCategory",
+        "responses": {
+          "204": {
+            "description": "204",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -98,7 +2033,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8080",
+      "url": "http://localhost:8080/api",
       "description": "Local Server"
     }
   ],

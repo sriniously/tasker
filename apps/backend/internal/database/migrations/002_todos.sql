@@ -30,7 +30,7 @@ CREATE TABLE todos (
     due_date TIMESTAMPTZ,
     completed_at TIMESTAMPTZ,
     parent_todo_id UUID REFERENCES todos,
-    category_id UUID REFERENCES todo_categories,
+    category_id UUID REFERENCES todo_categories ON DELETE SET NULL,
     metadata JSONB,
     sort_order SERIAL
 );

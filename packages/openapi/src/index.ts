@@ -43,7 +43,7 @@ export const OpenAPI = Object.assign(
       },
       servers: [
         {
-          url: "http://localhost:8080",
+          url: "http://localhost:8080/api",
           description: "Local Server",
         },
       ],
