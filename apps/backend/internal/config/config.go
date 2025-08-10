@@ -89,7 +89,10 @@ func LoadConfig() (*Config, error) {
 	k := koanf.New(".")
 
 	err := k.Load(env.Provider("TASKER_", ".", func(s string) string {
-		return strings.ReplaceAll(strings.ToLower(strings.TrimPrefix(s, "TASKER_")), "_", "")
+		// Remove TASKER_ prefix
+		s = strings.TrimPrefix(s, "TASKER_")
+		// Convert entire path to lowercase to match struct tags
+		return strings.ToLower(s)
 	}), nil)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("could not load initial env variables")
