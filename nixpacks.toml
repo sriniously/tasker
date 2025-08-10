@@ -14,7 +14,7 @@ workDir = '/app/apps/frontend'
 cmds = ['bun run build']
 
 [start]
-cmd = 'cd /app/apps/frontend && bun run preview -- --port ${PORT:-3000} --host 0.0.0.0'
+cmd = 'cd /app/apps/frontend && bun run start -- -l ${PORT:-3000}'
 
 [variables]
 NODE_ENV = 'production'

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "wait-on ../../packages/openapi/dist/index.js && env-cmd -f .env.local vite",
     "build": "vite build",
-    "start": "vite preview",
+    "start": "serve -s dist",
     "test": "vite test",
     "preview": "vite preview",
     "lint:fix": "eslint src --fix",
@@ -17,8 +17,6 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@tasker/openapi": "workspace:*",
-    "@tasker/zod": "workspace:*",
     "@clerk/clerk-react": "^5.38.1",
     "@clerk/themes": "^2.4.4",
     "@hookform/resolvers": "^5.2.1",
@@ -51,6 +49,8 @@
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.84.1",
     "@tanstack/react-query-devtools": "^5.84.1",
+    "@tasker/openapi": "workspace:*",
+    "@tasker/zod": "workspace:*",
     "@ts-rest/core": "^3.52.1",
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
@@ -69,6 +69,7 @@
     "react-resizable-panels": "^3.0.4",
     "react-router-dom": "^7.7.1",
     "recharts": "2.15.4",
+    "serve": "^14.2.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
