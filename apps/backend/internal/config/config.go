@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -83,13 +84,94 @@ func DefaultCronConfig() *CronConfig {
 	}
 }
 
+func parseMapString(mapStr string) (map[string]any, error) {
+	if !strings.HasPrefix(mapStr, "map[") || !strings.HasSuffix(mapStr, "]") {
+		return nil, fmt.Errorf("invalid map format: %s", mapStr)
+	}
+	
+	content := strings.TrimSuffix(strings.TrimPrefix(mapStr, "map["), "]")
+	if content == "" {
+		return make(map[string]any), nil
+	}
+	
+	result := make(map[string]any)
+	
+	i := 0
+	for i < len(content) {
+		for i < len(content) && content[i] == ' ' {
+			i++
+		}
+		if i >= len(content) {
+			break
+		}
+		
+		keyStart := i
+		for i < len(content) && content[i] != ':' {
+			i++
+		}
+		if i >= len(content) {
+			break
+		}
+		key := strings.ToLower(content[keyStart:i])
+		i++
+		
+		valueStart := i
+		var value string
+		
+		if i < len(content) && i+4 <= len(content) && content[i:i+4] == "map[" {
+			mapStart := i
+			bracketCount := 0
+			for i < len(content) {
+				if i+4 <= len(content) && content[i:i+4] == "map[" {
+					bracketCount++
+					i += 4
+				} else if content[i] == ']' {
+					bracketCount--
+					i++
+					if bracketCount == 0 {
+						break
+					}
+				} else {
+					i++
+				}
+			}
+			value = content[mapStart:i]
+			
+			nestedMap, err := parseMapString(value)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse nested map for key %s: %v", key, err)
+			}
+			result[key] = nestedMap
+		} else {
+			for i < len(content) && content[i] != ' ' {
+				i++
+			}
+			value = content[valueStart:i]
+			result[key] = value
+		}
+	}
+	
+	return result, nil
+}
+
 func LoadConfig() (*Config, error) {
 	logger := zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
 
 	k := koanf.New(".")
 
-	err := k.Load(env.Provider("TASKER_", "__", func(s string) string {
-		return strings.ToLower(strings.TrimPrefix(s, "TASKER_"))
+	err := k.Load(env.ProviderWithValue("TASKER_", ".", func(key, value string) (string, any) {
+		transformedKey := strings.ToLower(strings.TrimPrefix(key, "TASKER_"))
+		
+		if strings.HasPrefix(value, "map[") && strings.HasSuffix(value, "]") {
+			parsedMap, err := parseMapString(value)
+			if err != nil {
+				logger.Error().Err(err).Str("key", transformedKey).Str("value", value).Msg("failed to parse map value")
+				return transformedKey, value
+			}
+			return transformedKey, parsedMap
+		}
+		
+		return transformedKey, value
 	}), nil)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("could not load initial env variables")
@@ -111,21 +193,17 @@ func LoadConfig() (*Config, error) {
 		logger.Fatal().Err(err).Msg("config validation failed")
 	}
 
-	// Set default observability config if not provided
 	if mainConfig.Observability == nil {
 		mainConfig.Observability = DefaultObservabilityConfig()
 	}
 
-	// Override service name and environment from primary config
 	mainConfig.Observability.ServiceName = "tasker"
 	mainConfig.Observability.Environment = mainConfig.Primary.Env
 
-	// Validate observability config
 	if err := mainConfig.Observability.Validate(); err != nil {
 		logger.Fatal().Err(err).Msg("invalid observability config")
 	}
 
-	// Set default cron config if not provided
 	if mainConfig.Cron == nil {
 		mainConfig.Cron = DefaultCronConfig()
 	}
