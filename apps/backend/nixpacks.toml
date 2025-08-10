@@ -1,0 +1,18 @@
+[phases.setup]
+nixPkgs = ['go_1_24']
+
+[phases.install]
+cmds = ['go mod download']
+
+[phases.build]
+cmds = [
+    'go build -o tasker ./cmd/tasker',
+    'go build -o cron ./cmd/cron'
+]
+
+[start]
+cmd = './tasker'
+
+[variables]
+GO111MODULE = 'on'
+CGO_ENABLED = '0'
