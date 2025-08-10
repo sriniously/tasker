@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -84,17 +85,70 @@ func DefaultCronConfig() *CronConfig {
 	}
 }
 
+func parseMapString(value string) (map[string]string, bool) {
+	if !strings.HasPrefix(value, "map[") || !strings.HasSuffix(value, "]") {
+		return nil, false
+	}
+
+	content := strings.TrimPrefix(value, "map[")
+	content = strings.TrimSuffix(content, "]")
+
+	if content == "" {
+		return make(map[string]string), true
+	}
+
+	result := make(map[string]string)
+
+	re := regexp.MustCompile(`([A-Z_]+):([^\s]+)`)
+	matches := re.FindAllStringSubmatch(content, -1)
+
+	for _, match := range matches {
+		if len(match) == 3 {
+			key := strings.TrimSpace(match[1])
+			val := strings.TrimSpace(match[2])
+			result[key] = val
+		}
+	}
+
+	return result, true
+}
+
 func LoadConfig() (*Config, error) {
 	logger := zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
 
 	k := koanf.New(".")
 
+	envVars := make(map[string]string)
+	for _, env := range os.Environ() {
+		parts := strings.SplitN(env, "=", 2)
+		if len(parts) == 2 && strings.HasPrefix(parts[0], "TASKER_") {
+			key := parts[0]
+			value := parts[1]
+
+			configKey := strings.ToLower(strings.TrimPrefix(key, "TASKER_"))
+
+			if mapData, isMap := parseMapString(value); isMap {
+				for mapKey, mapValue := range mapData {
+					flatKey := configKey + "." + strings.ToLower(mapKey)
+					envVars[flatKey] = mapValue
+					fmt.Printf("%s %s\n", flatKey, mapValue)
+				}
+			} else {
+				envVars[configKey] = value
+				fmt.Printf("%s %s\n", configKey, value)
+			}
+		}
+	}
+
 	err := k.Load(env.ProviderWithValue("TASKER_", ".", func(key, value string) (string, any) {
-		fmt.Println(key, value)
 		return strings.ToLower(strings.TrimPrefix(key, "TASKER_")), value
 	}), nil)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("could not load initial env variables")
+	}
+
+	for key, value := range envVars {
+		k.Set(key, value)
 	}
 
 	k.Print()
@@ -113,21 +167,17 @@ func LoadConfig() (*Config, error) {
 		logger.Fatal().Err(err).Msg("config validation failed")
 	}
 
-	// Set default observability config if not provided
 	if mainConfig.Observability == nil {
 		mainConfig.Observability = DefaultObservabilityConfig()
 	}
 
-	// Override service name and environment from primary config
 	mainConfig.Observability.ServiceName = "tasker"
 	mainConfig.Observability.Environment = mainConfig.Primary.Env
 
-	// Validate observability config
 	if err := mainConfig.Observability.Validate(); err != nil {
 		logger.Fatal().Err(err).Msg("invalid observability config")
 	}
 
-	// Set default cron config if not provided
 	if mainConfig.Cron == nil {
 		mainConfig.Cron = DefaultCronConfig()
 	}

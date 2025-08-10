@@ -6,31 +6,31 @@ import (
 )
 
 type ObservabilityConfig struct {
-	ServiceName  string             `koanf:"observability_service_name" validate:"required"`
-	Environment  string             `koanf:"observability_environment" validate:"required"`
-	Logging      LoggingConfig      `koanf:"observability_logging" validate:"required"`
-	NewRelic     NewRelicConfig     `koanf:"observability_new_relic" validate:"required"`
-	HealthChecks HealthChecksConfig `koanf:"observability_health_checks" validate:"required"`
+	ServiceName  string             `koanf:"service_name" validate:"required"`
+	Environment  string             `koanf:"environment" validate:"required"`
+	Logging      LoggingConfig      `koanf:"logging" validate:"required"`
+	NewRelic     NewRelicConfig     `koanf:"new_relic" validate:"required"`
+	HealthChecks HealthChecksConfig `koanf:"health_checks" validate:"required"`
 }
 
 type LoggingConfig struct {
-	Level              string        `koanf:"observability_logging_level" validate:"required"`
-	Format             string        `koanf:"observability_logging_format" validate:"required"`
-	SlowQueryThreshold time.Duration `koanf:"observability_logging_slow_query_threshold"`
+	Level              string        `koanf:"level" validate:"required"`
+	Format             string        `koanf:"format" validate:"required"`
+	SlowQueryThreshold time.Duration `koanf:"slow_query_threshold"`
 }
 
 type NewRelicConfig struct {
-	LicenseKey                string `koanf:"observability_new_relic_license_key" validate:"required"`
-	AppLogForwardingEnabled   bool   `koanf:"observability_new_relic_app_log_forwarding_enabled"`
-	DistributedTracingEnabled bool   `koanf:"observability_new_relic_distributed_tracing_enabled"`
-	DebugLogging              bool   `koanf:"observability_new_relic_debug_logging"`
+	LicenseKey                string `koanf:"license_key" validate:"required"`
+	AppLogForwardingEnabled   bool   `koanf:"app_log_forwarding_enabled"`
+	DistributedTracingEnabled bool   `koanf:"distributed_tracing_enabled"`
+	DebugLogging              bool   `koanf:"debug_logging"`
 }
 
 type HealthChecksConfig struct {
-	Enabled  bool          `koanf:"observability_health_checks_enabled"`
-	Interval time.Duration `koanf:"observability_health_checks_interval" validate:"min=1s"`
-	Timeout  time.Duration `koanf:"observability_health_checks_timeout" validate:"min=1s"`
-	Checks   []string      `koanf:"observability_health_checks_checks"`
+	Enabled  bool          `koanf:"enabled"`
+	Interval time.Duration `koanf:"interval" validate:"min=1s"`
+	Timeout  time.Duration `koanf:"timeout" validate:"min=1s"`
+	Checks   []string      `koanf:"checks"`
 }
 
 func DefaultObservabilityConfig() *ObservabilityConfig {
