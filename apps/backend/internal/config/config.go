@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"regexp"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -99,14 +98,54 @@ func parseMapString(value string) (map[string]string, bool) {
 
 	result := make(map[string]string)
 
-	re := regexp.MustCompile(`([A-Z_]+):([^\s]+)`)
-	matches := re.FindAllStringSubmatch(content, -1)
+	i := 0
+	for i < len(content) {
+		keyStart := i
+		for i < len(content) && content[i] != ':' {
+			i++
+		}
+		if i >= len(content) {
+			break
+		}
 
-	for _, match := range matches {
-		if len(match) == 3 {
-			key := strings.TrimSpace(match[1])
-			val := strings.TrimSpace(match[2])
-			result[key] = val
+		key := strings.TrimSpace(content[keyStart:i])
+		i++
+
+		valueStart := i
+		if i+4 <= len(content) && content[i:i+4] == "map[" {
+			bracketCount := 0
+			for i < len(content) {
+				if i+4 <= len(content) && content[i:i+4] == "map[" {
+					bracketCount++
+					i += 4
+				} else if content[i] == ']' {
+					bracketCount--
+					i++
+					if bracketCount == 0 {
+						break
+					}
+				} else {
+					i++
+				}
+			}
+		} else {
+			for i < len(content) && content[i] != ' ' {
+				i++
+			}
+		}
+
+		value := strings.TrimSpace(content[valueStart:i])
+
+		if nestedMap, isNested := parseMapString(value); isNested {
+			for nestedKey, nestedValue := range nestedMap {
+				result[key+"."+nestedKey] = nestedValue
+			}
+		} else {
+			result[key] = value
+		}
+
+		for i < len(content) && content[i] == ' ' {
+			i++
 		}
 	}
 
