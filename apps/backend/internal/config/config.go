@@ -88,13 +88,8 @@ func LoadConfig() (*Config, error) {
 
 	k := koanf.New(".")
 
-	err := k.Load(env.Provider("TASKER_", ".", func(s string) string {
-		s = strings.TrimPrefix(s, "TASKER_")
-		s = strings.ToLower(s)
-		// Support prod-safe env names by mapping double underscores to nesting.
-		// Example: TASKER_DATABASE__HOST -> database.host
-		s = strings.ReplaceAll(s, "__", ".")
-		return s
+	err := k.Load(env.Provider("TASKER_", "__", func(s string) string {
+		return strings.ToLower(strings.TrimPrefix(s, "TASKER_"))
 	}), nil)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("could not load initial env variables")
