@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -24,54 +25,54 @@ type Config struct {
 }
 
 type Primary struct {
-	Env string `koanf:"primary_env" validate:"required"`
+	Env string `koanf:"env" validate:"required"`
 }
 
 type ServerConfig struct {
-	Port               string   `koanf:"server_port" validate:"required"`
-	ReadTimeout        int      `koanf:"server_read_timeout" validate:"required"`
-	WriteTimeout       int      `koanf:"server_write_timeout" validate:"required"`
-	IdleTimeout        int      `koanf:"server_idle_timeout" validate:"required"`
-	CORSAllowedOrigins []string `koanf:"server_cors_allowed_origins" validate:"required"`
+	Port               string   `koanf:"port" validate:"required"`
+	ReadTimeout        int      `koanf:"read_timeout" validate:"required"`
+	WriteTimeout       int      `koanf:"write_timeout" validate:"required"`
+	IdleTimeout        int      `koanf:"idle_timeout" validate:"required"`
+	CORSAllowedOrigins []string `koanf:"cors_allowed_origins" validate:"required"`
 }
 
 type DatabaseConfig struct {
-	Host            string `koanf:"database_host" validate:"required"`
-	Port            int    `koanf:"database_port" validate:"required"`
-	User            string `koanf:"database_user" validate:"required"`
-	Password        string `koanf:"database_password"`
-	Name            string `koanf:"database_name" validate:"required"`
-	SSLMode         string `koanf:"database_ssl_mode" validate:"required"`
-	MaxOpenConns    int    `koanf:"database_max_open_conns" validate:"required"`
-	MaxIdleConns    int    `koanf:"database_max_idle_conns" validate:"required"`
-	ConnMaxLifetime int    `koanf:"database_conn_max_lifetime" validate:"required"`
-	ConnMaxIdleTime int    `koanf:"database_conn_max_idle_time" validate:"required"`
+	Host            string `koanf:"host" validate:"required"`
+	Port            int    `koanf:"port" validate:"required"`
+	User            string `koanf:"user" validate:"required"`
+	Password        string `koanf:"password"`
+	Name            string `koanf:"name" validate:"required"`
+	SSLMode         string `koanf:"ssl_mode" validate:"required"`
+	MaxOpenConns    int    `koanf:"max_open_conns" validate:"required"`
+	MaxIdleConns    int    `koanf:"max_idle_conns" validate:"required"`
+	ConnMaxLifetime int    `koanf:"conn_max_lifetime" validate:"required"`
+	ConnMaxIdleTime int    `koanf:"conn_max_idle_time" validate:"required"`
 }
 type RedisConfig struct {
-	Address string `koanf:"redis_address" validate:"required"`
+	Address string `koanf:"address" validate:"required"`
 }
 
 type IntegrationConfig struct {
-	ResendAPIKey string `koanf:"integration_resend_api_key" validate:"required"`
+	ResendAPIKey string `koanf:"resend_api_key" validate:"required"`
 }
 
 type AuthConfig struct {
-	SecretKey string `koanf:"auth_secret_key" validate:"required"`
+	SecretKey string `koanf:"secret_key" validate:"required"`
 }
 
 type AWSConfig struct {
-	Region          string `koanf:"aws_region" validate:"required"`
-	AccessKeyID     string `koanf:"aws_access_key_id" validate:"required"`
-	SecretAccessKey string `koanf:"aws_secret_access_key" validate:"required"`
-	UploadBucket    string `koanf:"aws_upload_bucket" validate:"required"`
-	EndpointURL     string `koanf:"aws_endpoint_url"`
+	Region          string `koanf:"region" validate:"required"`
+	AccessKeyID     string `koanf:"access_key_id" validate:"required"`
+	SecretAccessKey string `koanf:"secret_access_key" validate:"required"`
+	UploadBucket    string `koanf:"upload_bucket" validate:"required"`
+	EndpointURL     string `koanf:"endpoint_url"`
 }
 
 type CronConfig struct {
-	ArchiveDaysThreshold        int `koanf:"cron_archive_days_threshold"`
-	BatchSize                   int `koanf:"cron_batch_size"`
-	ReminderHours               int `koanf:"cron_reminder_hours"`
-	MaxTodosPerUserNotification int `koanf:"cron_max_todos_per_user_notification"`
+	ArchiveDaysThreshold        int `koanf:"archive_days_threshold"`
+	BatchSize                   int `koanf:"batch_size"`
+	ReminderHours               int `koanf:"reminder_hours"`
+	MaxTodosPerUserNotification int `koanf:"max_todos_per_user_notification"`
 }
 
 func DefaultCronConfig() *CronConfig {
@@ -88,48 +89,21 @@ func LoadConfig() (*Config, error) {
 
 	k := koanf.New(".")
 
-	err := k.Load(env.Provider("TASKER_", "", func(s string) string {
+	err := k.Load(env.Provider("TASKER_", ".", func(s string) string {
+		fmt.Println(s)
 		return strings.ToLower(strings.TrimPrefix(s, "TASKER_"))
 	}), nil)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("could not load initial env variables")
 	}
 
+	k.Print()
+
 	mainConfig := &Config{}
 
-	configTargets := []struct {
-		target interface{}
-		name   string
-	}{
-		{&mainConfig.AWS, "aws config"},
-		{&mainConfig.Database, "database config"},
-		{&mainConfig.Primary, "primary config"},
-		{&mainConfig.Auth, "auth config"},
-		{&mainConfig.Redis, "redis config"},
-		{&mainConfig.Integration, "integration config"},
-		{&mainConfig.Cron, "cron config"},
-		{&mainConfig.Server, "server config"},
-	}
-
-	for _, target := range configTargets {
-		if err := k.Unmarshal("", target.target); err != nil {
-			logger.Fatal().Err(err).Msgf("could not unmarshal %s", target.name)
-		}
-	}
-
-	if err := k.Unmarshal("", &mainConfig.Observability); err != nil {
-		logger.Fatal().Err(err).Msg("could not unmarshal observability config")
-	}
-	if mainConfig.Observability != nil {
-		if err := k.Unmarshal("", &mainConfig.Observability.Logging); err != nil {
-			logger.Fatal().Err(err).Msg("could not unmarshal observability logging config")
-		}
-		if err := k.Unmarshal("", &mainConfig.Observability.NewRelic); err != nil {
-			logger.Fatal().Err(err).Msg("could not unmarshal observability new relic config")
-		}
-		if err := k.Unmarshal("", &mainConfig.Observability.HealthChecks); err != nil {
-			logger.Fatal().Err(err).Msg("could not unmarshal observability health checks config")
-		}
+	err = k.Unmarshal("", mainConfig)
+	if err != nil {
+		logger.Fatal().Err(err).Msg("could not unmarshal main config")
 	}
 
 	validate := validator.New()
@@ -139,17 +113,21 @@ func LoadConfig() (*Config, error) {
 		logger.Fatal().Err(err).Msg("config validation failed")
 	}
 
+	// Set default observability config if not provided
 	if mainConfig.Observability == nil {
 		mainConfig.Observability = DefaultObservabilityConfig()
 	}
 
+	// Override service name and environment from primary config
 	mainConfig.Observability.ServiceName = "tasker"
 	mainConfig.Observability.Environment = mainConfig.Primary.Env
 
+	// Validate observability config
 	if err := mainConfig.Observability.Validate(); err != nil {
 		logger.Fatal().Err(err).Msg("invalid observability config")
 	}
 
+	// Set default cron config if not provided
 	if mainConfig.Cron == nil {
 		mainConfig.Cron = DefaultCronConfig()
 	}
