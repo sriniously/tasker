@@ -1,15 +1,24 @@
 package job
 
 import (
+	"context"
+
 	"github.com/hibiken/asynq"
 	"github.com/rs/zerolog"
 	"github.com/sriniously/tasker/internal/config"
+	"github.com/sriniously/tasker/internal/lib/email"
 )
 
 type JobService struct {
-	Client *asynq.Client
-	server *asynq.Server
-	logger *zerolog.Logger
+	Client      *asynq.Client
+	server      *asynq.Server
+	logger      *zerolog.Logger
+	authService AuthServiceInterface
+	emailClient *email.Client
+}
+
+type AuthServiceInterface interface {
+	GetUserEmail(ctx context.Context, userID string) (string, error)
 }
 
 func NewJobService(logger *zerolog.Logger, cfg *config.Config) *JobService {
@@ -38,10 +47,16 @@ func NewJobService(logger *zerolog.Logger, cfg *config.Config) *JobService {
 	}
 }
 
+func (j *JobService) SetAuthService(authService AuthServiceInterface) {
+	j.authService = authService
+}
+
 func (j *JobService) Start() error {
 	// Register task handlers
 	mux := asynq.NewServeMux()
 	mux.HandleFunc(TaskWelcome, j.handleWelcomeEmailTask)
+	mux.HandleFunc(TaskReminderEmail, j.handleReminderEmailTask)
+	mux.HandleFunc(TaskWeeklyReportEmail, j.handleWeeklyReportEmailTask)
 
 	j.logger.Info().Msg("Starting background job server")
 	if err := j.server.Start(mux); err != nil {

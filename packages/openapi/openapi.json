@@ -490,6 +490,56 @@
                                 "updatedAt"
                               ]
                             }
+                          },
+                          "attachments": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "todoId": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "uploadedBy": {
+                                  "type": "string"
+                                },
+                                "downloadKey": {
+                                  "type": "string"
+                                },
+                                "fileSize": {
+                                  "type": "number",
+                                  "nullable": true
+                                },
+                                "mimeType": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "createdAt": {
+                                  "type": "string"
+                                },
+                                "updatedAt": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "todoId",
+                                "name",
+                                "uploadedBy",
+                                "downloadKey",
+                                "fileSize",
+                                "mimeType",
+                                "createdAt",
+                                "updatedAt"
+                              ]
+                            }
                           }
                         },
                         "required": [
@@ -509,7 +559,8 @@
                           "updatedAt",
                           "category",
                           "children",
-                          "comments"
+                          "comments",
+                          "attachments"
                         ]
                       }
                     },
@@ -1014,6 +1065,56 @@
                           "updatedAt"
                         ]
                       }
+                    },
+                    "attachments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "todoId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "uploadedBy": {
+                            "type": "string"
+                          },
+                          "downloadKey": {
+                            "type": "string"
+                          },
+                          "fileSize": {
+                            "type": "number",
+                            "nullable": true
+                          },
+                          "mimeType": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "todoId",
+                          "name",
+                          "uploadedBy",
+                          "downloadKey",
+                          "fileSize",
+                          "mimeType",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
                     }
                   },
                   "required": [
@@ -1033,7 +1134,8 @@
                     "updatedAt",
                     "category",
                     "children",
-                    "comments"
+                    "comments",
+                    "attachments"
                   ]
                 }
               }
@@ -1326,6 +1428,203 @@
                     "completed",
                     "archived",
                     "overdue"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/todos/{id}/attachments": {
+      "post": {
+        "description": "Upload a file attachment to a todo",
+        "summary": "Upload attachment to todo",
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "uploadTodoAttachment",
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "201",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "todoId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "uploadedBy": {
+                      "type": "string"
+                    },
+                    "downloadKey": {
+                      "type": "string"
+                    },
+                    "fileSize": {
+                      "type": "number",
+                      "nullable": true
+                    },
+                    "mimeType": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "todoId",
+                    "name",
+                    "uploadedBy",
+                    "downloadKey",
+                    "fileSize",
+                    "mimeType",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/todos/{id}/attachments/{attachmentId}": {
+      "delete": {
+        "description": "Delete a file attachment from a todo",
+        "summary": "Delete todo attachment",
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "attachmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "deleteTodoAttachment",
+        "responses": {
+          "204": {
+            "description": "204",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/todos/{id}/attachments/{attachmentId}/download": {
+      "get": {
+        "description": "Get a presigned URL to download an attachment",
+        "summary": "Get attachment download URL",
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "attachmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "getAttachmentPresignedURL",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  },
+                  "required": [
+                    "url"
                   ]
                 }
               }
