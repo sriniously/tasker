@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['go_1_24']
+nixPkgs = ['go_1_23']
 
 [phases.install]
 cmds = ['go mod download']
