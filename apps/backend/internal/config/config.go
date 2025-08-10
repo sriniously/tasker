@@ -190,8 +190,6 @@ func LoadConfig() (*Config, error) {
 		k.Set(key, value)
 	}
 
-	k.Print()
-
 	mainConfig := &Config{}
 
 	err = k.Unmarshal("", mainConfig)
@@ -204,6 +202,8 @@ func LoadConfig() (*Config, error) {
 	err = validate.Struct(mainConfig)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("config validation failed")
+	} else {
+		logger.Info().Msg("config validation passed")
 	}
 
 	if mainConfig.Observability == nil {
