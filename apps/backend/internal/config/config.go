@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
@@ -49,7 +48,8 @@ type DatabaseConfig struct {
 	ConnMaxIdleTime int    `koanf:"conn_max_idle_time" validate:"required"`
 }
 type RedisConfig struct {
-	Address string `koanf:"address" validate:"required"`
+	Address  string `koanf:"address" validate:"required"`
+	Password string `koanf:"password"`
 }
 
 type IntegrationConfig struct {
@@ -170,11 +170,9 @@ func LoadConfig() (*Config, error) {
 				for mapKey, mapValue := range mapData {
 					flatKey := configKey + "." + strings.ToLower(mapKey)
 					envVars[flatKey] = mapValue
-					fmt.Printf("%s %s\n", flatKey, mapValue)
 				}
 			} else {
 				envVars[configKey] = value
-				fmt.Printf("%s %s\n", configKey, value)
 			}
 		}
 	}

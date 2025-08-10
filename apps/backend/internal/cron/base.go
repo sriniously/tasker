@@ -37,6 +37,7 @@ func NewJobContext() (*JobContext, error) {
 
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: cfg.Redis.Address,
+		Password: cfg.Redis.Password,
 	})
 
 	srv := &server.Server{
@@ -81,6 +82,7 @@ func (c *JobContext) Close() {
 func initJobClient(cfg *config.Config) (*asynq.Client, error) {
 	redisOpt := asynq.RedisClientOpt{
 		Addr: cfg.Redis.Address,
+		Password: cfg.Redis.Password,
 	}
 
 	client := asynq.NewClient(redisOpt)
