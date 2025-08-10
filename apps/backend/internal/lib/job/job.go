@@ -27,6 +27,7 @@ func NewJobService(logger *zerolog.Logger, cfg *config.Config) *JobService {
 	client := asynq.NewClient(asynq.RedisClientOpt{
 		Addr: redisAddr,
 		Password: cfg.Redis.Password,
+		DB:       0,
 	})
 
 	server := asynq.NewServer(
