@@ -89,7 +89,7 @@ func LoadConfig() (*Config, error) {
 	k := koanf.New(".")
 
 	err := k.Load(env.Provider("TASKER_", ".", func(s string) string {
-		return strings.ToLower(strings.TrimPrefix(s, "TASKER_"))
+		return strings.ReplaceAll(strings.ToLower(strings.TrimPrefix(s, "TASKER_")), "_", "")
 	}), nil)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("could not load initial env variables")
