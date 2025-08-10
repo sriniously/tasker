@@ -161,6 +161,12 @@ func LoadConfig() (*Config, error) {
 
 	err := k.Load(env.ProviderWithValue("TASKER_", ".", func(key, value string) (string, any) {
 		transformedKey := strings.ToLower(strings.TrimPrefix(key, "TASKER_"))
+
+		fmt.Println(transformedKey, value)
+		
+		if strings.Contains(transformedKey, "__") {
+			return "", nil
+		}
 		
 		if strings.HasPrefix(value, "map[") && strings.HasSuffix(value, "]") {
 			parsedMap, err := parseMapString(value)
