@@ -6,7 +6,6 @@ export {
   useUpdateTodo,
   useDeleteTodo,
   useGetTodoStats,
-  useBulkUpdateTodos,
   type TGetTodosQuery,
   type TGetTodosResponse,
   type TGetTodoByIdResponse,
@@ -14,8 +13,6 @@ export {
   type TCreateTodoResponse,
   type TUpdateTodoPayload,
   type TUpdateTodoResponse,
-  type TBulkUpdateTodosPayload,
-  type TBulkUpdateTodosResponse,
   type TTodoStatsResponse,
 } from "./use-todo-query.js";
 

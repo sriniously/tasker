@@ -4,7 +4,6 @@ import {
   useGetAllTodos,
   type TGetTodosQuery,
 } from "@/api/hooks/use-todo-query";
-import { TodoBulkActions } from "@/components/todos/todo-bulk-actions";
 import { TodoCard } from "@/components/todos/todo-card";
 import { TodoCreateForm } from "@/components/todos/todo-create-form";
 import { Button } from "@/components/ui/button";
@@ -219,10 +218,6 @@ export function TodosPage() {
                       {selectedTodos.length} selected
                     </span>
                   </div>
-                  <TodoBulkActions
-                    selectedTodos={selectedTodos}
-                    onSelectionChange={setSelectedTodos}
-                  />
                 </div>
               </CardContent>
             </Card>

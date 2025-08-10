@@ -1,10 +1,10 @@
-import { useUser } from "@clerk/clerk-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { useTheme } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useUser } from "@clerk/clerk-react";
 import {
   User,
   Palette,
@@ -18,7 +18,8 @@ export function SettingsPage() {
   const { user } = useUser();
   const { theme } = useTheme();
 
-  const themeName = theme === "system" ? "System" : theme === "dark" ? "Dark" : "Light";
+  const themeName =
+    theme === "system" ? "System" : theme === "dark" ? "Dark" : "Light";
 
   return (
     <div className="space-y-6">
@@ -52,7 +53,7 @@ export function SettingsPage() {
                   {user?.primaryEmailAddress?.emailAddress}
                 </p>
                 <Badge variant="secondary" className="mt-1">
-                  {user?.publicMetadata?.role || "User"}
+                  {(user?.publicMetadata?.role as string) || "User"}
                 </Badge>
               </div>
             </div>
@@ -60,8 +61,18 @@ export function SettingsPage() {
             <div className="space-y-2">
               <p className="text-sm font-medium">Account Details</p>
               <div className="space-y-1 text-sm text-muted-foreground">
-                <p>Member since: {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</p>
-                <p>Last updated: {user?.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : "N/A"}</p>
+                <p>
+                  Member since:{" "}
+                  {user?.createdAt
+                    ? new Date(user.createdAt).toLocaleDateString()
+                    : "N/A"}
+                </p>
+                <p>
+                  Last updated:{" "}
+                  {user?.updatedAt
+                    ? new Date(user.updatedAt).toLocaleDateString()
+                    : "N/A"}
+                </p>
               </div>
             </div>
             <Button variant="outline" className="w-full">
@@ -218,8 +229,8 @@ export function SettingsPage() {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              Data export/import and deletion features are coming soon.
-              Contact support if you need immediate assistance.
+              Data export/import and deletion features are coming soon. Contact
+              support if you need immediate assistance.
             </p>
           </CardContent>
         </Card>
