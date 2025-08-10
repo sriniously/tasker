@@ -1,4 +1,4 @@
-import { getSecurityMetadata } from "@/utils.js";
+import { getSecurityMetadata } from "../utils.js";
 import {
   schemaWithPagination,
   ZPopulatedTodo,

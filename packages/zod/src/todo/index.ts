@@ -1,5 +1,5 @@
-import { ZTodoCategory } from "@/category/index.js";
-import { ZTodoComment } from "@/comment/index.js";
+import { ZTodoCategory } from "../category/index.js";
+import { ZTodoComment } from "../comment/index.js";
 import z from "zod";
 
 export const ZTodoStatus = z.enum(["draft", "active", "completed", "archived"]);

@@ -278,8 +278,8 @@ export const WeeklyReportEmail = ({
 };
 
 WeeklyReportEmail.PreviewProps = {
-  weekStart: "January 8, 2024",
-  weekEnd: "January 14, 2024",
+  weekStart: "January 8, 2025",
+  weekEnd: "January 14, 2025",
   completedCount: "8",
   activeCount: "12",
   overdueCount: "3",
@@ -293,13 +293,13 @@ WeeklyReportEmail.PreviewProps = {
       id: "4",
       title: "Submit expense reports",
       priority: "high",
-      dueDate: "January 10, 2024",
+      dueDate: "January 10, 2025",
     },
     {
       id: "5",
       title: "Review marketing proposals",
       priority: "medium",
-      dueDate: "January 12, 2024",
+      dueDate: "January 12, 2025",
     },
   ],
   hasCompleted: true,

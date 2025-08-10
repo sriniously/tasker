@@ -135,7 +135,7 @@ export const OverdueNotificationEmail = ({
 OverdueNotificationEmail.PreviewProps = {
   todoTitle: "Review budget proposal",
   todoID: "123e4567-e89b-12d3-a456-426614174000",
-  dueDate: "Friday, January 12, 2024 at 3:00 PM",
+  dueDate: "Friday, January 12, 2025 at 3:00 PM",
   daysOverdue: "3",
 };
 

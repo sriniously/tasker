@@ -1,10 +1,10 @@
-import { API_URL } from "@/config/env";
+import { env } from "@/config/env";
 import { apiContract } from "@tasker/openapi/contracts";
 import { useAuth } from "@clerk/clerk-react";
 import { initClient } from "@ts-rest/core";
 import axios, {
   type Method,
-  AxiosError,
+  type AxiosError,
   isAxiosError,
   type AxiosResponse,
 } from "axios";
@@ -24,14 +24,14 @@ export const useApiClient = ({ isBlob = false }: { isBlob?: boolean } = {}) => {
       "Content-Type": "application/json",
     },
     api: async ({ path, method, headers, body }) => {
-      const token = await getToken({ template: "custom" });
+      const token = await getToken();
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const makeRequest = async (retryCount = 0): Promise<any> => {
         try {
           const result = await axios.request({
             method: method as Method,
-            url: `${API_URL}/api${path}`,
+            url: `${env.VITE_API_URL}/api${path}`,
             headers: {
               ...headers,
               ...(token ? { Authorization: `Bearer ${token}` } : {}),

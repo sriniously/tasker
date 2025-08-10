@@ -1,4 +1,4 @@
-import { getSecurityMetadata } from "@/utils.js";
+import { getSecurityMetadata } from "../utils.js";
 import { ZTodoComment } from "@tasker/zod";
 import { initContract } from "@ts-rest/core";
 import z from "zod";

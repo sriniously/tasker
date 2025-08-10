@@ -124,7 +124,7 @@ export const DueDateReminderEmail = ({
 DueDateReminderEmail.PreviewProps = {
   todoTitle: "Complete quarterly report",
   todoID: "123e4567-e89b-12d3-a456-426614174000",
-  dueDate: "Monday, January 15, 2024 at 5:00 PM",
+  dueDate: "Monday, January 15, 2025 at 5:00 PM",
   daysUntilDue: "1",
 };
 

@@ -14,7 +14,7 @@ func CreateTestServer(logger *zerolog.Logger, db *TestDB) *server.Server {
 	// Set up observability config with defaults if not present
 	if db.Config.Observability == nil {
 		db.Config.Observability = &config.ObservabilityConfig{
-			ServiceName: "alfred-test",
+			ServiceName: "tasker-test",
 			Environment: "test",
 			Logging: config.LoggingConfig{
 				Level:              "info",
